@@ -16,6 +16,10 @@ app.get("/", (req, res) => {
     res.send("Olá");
 })
 
+app.get("/cadastro", (req, res) => {
+    res.render("create.ejs");
+})
+
 app.listen(3000, () => {
     console.log("Servidor rodando");
 })
