@@ -19,12 +19,14 @@ app.get("/", (req, res) => {
 })
 
 app.get("/appointments", async (req, res) => {
-    var consultas = await AppointmentService.GetAll(false);
+    var appointments = await AppointmentService.GetAll(false);
 
-    res.json(consultas)
+    
+
+    res.json(appointments);
 })
 
-app.get("/cadastro", (req, res) => {
+app.get("/register", (req, res) => {
     res.render("create.ejs");
 })
 
