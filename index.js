@@ -20,10 +20,12 @@ app.get("/", (req, res) => {
 
 app.get("/appointments", async (req, res) => {
     var appointments = await AppointmentService.GetAll(false);
-
-    
-
     res.json(appointments);
+})
+
+app.get("/details/:id", async(req, res) => {    
+    var appointment = await AppointmentService.GetById(req.params.id);
+    res.render("details", {appo: appointment});
 })
 
 app.get("/register", (req, res) => {

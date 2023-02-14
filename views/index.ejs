@@ -19,7 +19,10 @@
     var calendar = new FullCalendar.Calendar(element,{
         initalView: 'dayGridMonth',
         locale: 'pt-br',
-        events: 'appointments'
+        events: 'appointments',
+        eventClick: function(info){
+            window.location.href = '/details/'+info.event.id
+        }
     });
 
     calendar.render();
