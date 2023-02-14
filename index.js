@@ -33,6 +33,17 @@ app.get("/details/:id", async (req, res) => {
     }
 })
 
+app.get("/list", async(req, res) => {
+
+    var appos = await AppointmentService.GetAll(true);
+    res.render("list", {appos});
+})
+
+app.get("/searchresult", async (req, res) => {    
+    var appos = await AppointmentService.Search(req.query.search)
+    res.render("list", {appos});
+})
+
 app.post("/finish", async (req, res) => {
     var id = req.body.id;
     var result = await AppointmentService.Finish(id);
