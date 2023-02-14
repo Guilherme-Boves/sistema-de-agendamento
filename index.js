@@ -23,9 +23,25 @@ app.get("/appointments", async (req, res) => {
     res.json(appointments);
 })
 
-app.get("/details/:id", async(req, res) => {    
+app.get("/details/:id", async (req, res) => {    
     var appointment = await AppointmentService.GetById(req.params.id);
-    res.render("details", {appo: appointment});
+    if(appointment == undefined){
+        res.status(404);
+        res.redirect("/");
+    } else {
+        res.render("details", {appo: appointment});
+    }
+})
+
+app.post("/finish", async (req, res) => {
+    var id = req.body.id;
+    var result = await AppointmentService.Finish(id);
+    if(result){
+        res.redirect("/");
+    } else {
+        res.status(400);
+        res.json({err: "Ocorreu um erro ao finalizar a consulta"})
+    }
 })
 
 app.get("/register", (req, res) => {
