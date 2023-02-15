@@ -2,7 +2,6 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-const appointmentService = require("./services/AppointmentService");
 const AppointmentService = require("./services/AppointmentService");
 
 app.use(express.static("public"));
@@ -99,7 +98,7 @@ app.post("/create", async (req, res) => {
         return;
     }
 
-    var status = await appointmentService.Create(
+    var status = await AppointmentService.Create(
         name,
         email,
         description,
@@ -115,6 +114,11 @@ app.post("/create", async (req, res) => {
         res.send("Ocorreu uma falha!")
     }
 })
+
+var pollTime = 5000;
+setInterval(async () => {
+    await AppointmentService.SendNotification();
+}, pollTime)
 
 app.listen(3000, () => {
     console.log("Servidor rodando");

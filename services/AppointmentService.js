@@ -1,6 +1,7 @@
 const appointment = require("../models/Appointment");
 const mongoose = require("mongoose");
 const AppointmentFactory = require("../factories/AppointmentFactory");
+const mailer = require("nodemailer");
 
 const Appo = mongoose.model("Appointment", appointment);
 
@@ -14,7 +15,8 @@ class AppointmentService {
             cpf,
             date,
             time,
-            finished: false
+            finished: false,
+            notified: false
         });
         try{
             await newAppo.save()
@@ -73,6 +75,44 @@ class AppointmentService {
             console.log(err)
             return [];
         }
+    }
+
+    async SendNotification(){
+
+        var appos = await this.GetAll(false);
+
+        var transporter = mailer.createTransport({
+            host:"sandbox.smtp.mailtrap.io",
+            port: 25,
+            auth:{
+                user:"752a26f97418ee",
+                pass:"70f9c45d34931d"
+            }
+        });
+
+        appos.forEach(async app => {
+            var date = app.start.getTime();
+            var hour = 1000 * 60 * 60;
+            var gap = date-Date.now();
+
+            if(gap <= hour){
+                if(!app.notified){
+
+                    await Appo.findByIdAndUpdate(app.id, {notified: true});
+
+                    transporter.sendMail({
+                        from: "Clinica MongoDB <clinica@email.com.br>",
+                        to: app.email,
+                        subject: "Sua consulta na Clinica MongoDB",
+                        text:"Sua consulta vai acontecer em 1h!"
+                    }).then(() => {
+
+                    }).catch(err => {
+                        console.log(err)
+                    })
+                }
+            }
+        })
     }
 }
 
